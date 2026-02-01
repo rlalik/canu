@@ -1,6 +1,6 @@
-# canvas_unifizer
+# canu
 
-This is the canvas_unifizer project.
+This is the canu project.
 
 # Building and installing
 
