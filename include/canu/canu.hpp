@@ -39,7 +39,7 @@ constexpr auto px2pt(auto value_px) { return static_cast<double>(value_px) * 3 /
  * @param override_scale scale all dimensions, equal to 1 if left uninitialzied
  */
 inline auto set_canvas_size(TCanvas* can, UInt_t override_width, std::optional<UInt_t> override_height = {},
-                            std::optional<UInt_t> override_scale = {}) -> void
+                            std::optional<UInt_t> override_scale = {}) -> UInt_t
 {
     const auto winw = can->GetWw();
     const auto winh = can->GetWh();
@@ -59,6 +59,8 @@ inline auto set_canvas_size(TCanvas* can, UInt_t override_width, std::optional<U
     }
 
     std::printf("Resize canvas %s : %dx%d to %dx%d\n", can->GetName(), winw, winh, new_width, new_height);
+
+    return new_height;
 }
 
 /**
@@ -199,10 +201,10 @@ class canu;
 
 class axis_properties
 {
-    std::optional<Int_t> m_max_digits;
-    std::optional<Int_t> m_ndivisions;
-    std::optional<Float_t> m_toffset; // title offsets
-    std::optional<Float_t> m_loffset; // label offsets
+    std::optional<Int_t> m_max_digits{};
+    std::optional<Int_t> m_ndivisions{};
+    std::optional<Float_t> m_toffset{}; // title offsets
+    std::optional<Float_t> m_loffset{}; // label offsets
 
     friend class canu;
 
@@ -258,7 +260,7 @@ public:
     auto make_page_wide(TCanvas* can, std::optional<UInt_t> height = {})
     {
         single_canvas_action(can);
-        set_canvas_size(can, m_page_width, height, m_details_scale);
+        m_page_height = set_canvas_size(can, m_page_width, height, m_details_scale);
         set_canvas_fonts(can);
         set_canvas_margins(can, m_margin_left, m_margin_right, m_margin_bottom, m_margin_top,
                            m_page_width * m_details_scale);
@@ -267,7 +269,7 @@ public:
     auto make_column_wide(TCanvas* can, std::optional<UInt_t> height = {})
     {
         single_canvas_action(can);
-        set_canvas_size(can, m_column_width, height, m_details_scale);
+        m_page_height = set_canvas_size(can, m_column_width, height, m_details_scale);
         set_canvas_fonts(can);
         set_canvas_margins(can, m_margin_left, m_margin_right, m_margin_bottom, m_margin_top,
                            m_page_width * m_details_scale);
@@ -294,19 +296,26 @@ private:
         const auto pad_width = pad->GetWNDC() * pad->GetWw();
         const auto pad_height = pad->GetHNDC() * pad->GetWh();
 
-        auto axis_settings = [&](auto* axis, auto& axis_prop, auto ref_distance) -> void
+        std::printf("Pad width x height = %.0f x %.0f\n", pad_width, pad_height);
+
+        auto axis_settings = [&](auto* axis, auto& axis_prop, auto scale) -> void
         {
             axis->SetLabelFont(m_font_kind);
             axis->SetLabelSize(m_font_size * m_details_scale);
             axis->SetTitleFont(m_font_kind);
             axis->SetTitleSize(m_font_size * m_details_scale);
 
-            const auto scale = ref_distance / m_page_width;
-
             axis->SetMaxDigits(axis_prop.m_max_digits.value_or(axis->GetMaxDigits()));
             axis->SetNdivisions(axis_prop.m_ndivisions.value_or(axis->GetNdivisions()));
-            axis->SetTitleOffset(axis_prop.m_toffset.value_or(axis->GetTitleOffset()) * scale);
+            axis->SetTitleOffset(axis_prop.m_toffset.value_or(axis->GetTitleOffset()));
             axis->SetLabelOffset(axis_prop.m_loffset.value_or(axis->GetLabelOffset()) * scale);
+
+            std::printf("MaxDigits=%d Ndiv=%d to=%.3f lo=%.3f scale=%.3f w=%d h=%d\n", //
+                        axis_prop.m_max_digits.value_or(axis->GetMaxDigits()),
+                        axis_prop.m_ndivisions.value_or(axis->GetNdivisions()),
+                        axis_prop.m_toffset.value_or(axis->GetTitleOffset()),
+                        axis_prop.m_loffset.value_or(axis->GetLabelOffset()) * scale, //
+                        scale, m_page_width, m_page_height);
         };
 
         for (auto primitive : *pad->GetListOfPrimitives())
@@ -322,9 +331,9 @@ private:
             {
                 if (m_remove_title) { hist->SetTitle(""); }
 
-                axis_settings(hist->GetXaxis(), m_axis_x, pad_width);
-                axis_settings(hist->GetYaxis(), m_axis_y, pad_height);
-                axis_settings(hist->GetZaxis(), m_axis_z, 1);
+                axis_settings(hist->GetXaxis(), m_axis_x, 1. * m_page_width / pad_height);
+                axis_settings(hist->GetYaxis(), m_axis_y, 1. * m_page_width / pad_width);
+                axis_settings(hist->GetZaxis(), m_axis_z, 1.);
 
                 hist->SetTitleFont(m_font_kind);
                 hist->SetTitleSize(m_font_size * m_details_scale);
@@ -333,14 +342,15 @@ private:
             {
                 if (m_remove_title) { hstack->SetTitle(""); }
 
-                axis_settings(hstack->GetXaxis(), m_axis_x, pad_width);
-                axis_settings(hstack->GetYaxis(), m_axis_y, pad_height);
-                axis_settings(hstack->GetZaxis(), m_axis_z, 1);
+                axis_settings(hstack->GetXaxis(), m_axis_x, 1. * m_page_width / pad_height);
+                axis_settings(hstack->GetYaxis(), m_axis_y, 1. * m_page_width / pad_width);
+                axis_settings(hstack->GetZaxis(), m_axis_z, 1.);
             }
         }
     }
 
     UInt_t m_page_width;
+    UInt_t m_page_height{0};
     UInt_t m_column_width;
 
     UInt_t m_font_size;
@@ -365,8 +375,9 @@ constexpr auto make_nim_paper()
     auto canu = cu::canu(522, 252, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
 
-    canu.y_prop().set_max_digits(3).set_title_offset(1.75);
-    canu.z_prop().set_max_digits(3);
+    canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);
+    canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.25);
+    canu.z_prop().set_max_digits(3).set_label_offset(0.005);
 
     return canu;
 }
