@@ -60,6 +60,8 @@ inline auto set_canvas_size(TCanvas* can, UInt_t override_width, std::optional<U
         can->SetWindowSize(new_width + (width - winw), new_height + (height - winh));
     }
 
+    can->Modified();
+
     std::printf("Resize canvas %s : %dx%d to %dx%d\n", can->GetName(), winw, winh, new_width, new_height);
 
     return new_height;
@@ -83,11 +85,22 @@ inline auto fix_canvas_size(TCanvas* can)
     const auto height = can->GetWindowHeight();
 
     // BUG in ROOT with SetWindowSize() for batch mode? Here is workaround
-    if (can->IsBatch() && !can->IsWeb()) { can->SetCanvasSize(width, height); }
-    else
+    if (can->IsBatch() && !can->IsWeb())
     {
-        can->SetWindowSize(width + (width - winw), height + (height - winh));
+        can->SetCanvasSize(width, height);
+        can->SetWindowSize(width, height);
+
+        Int_t ww{};
+        Int_t wh{};
+        UInt_t winw{};
+        UInt_t winh{};
+        can->GetCanvasPar(ww, wh, winw, winh);
+        winw = width + 2;
+        winh = height + 29;
     }
+    else { can->SetWindowSize(width + (width - winw), height + (height - winh)); }
+
+    can->Modified();
 
     std::printf("Fixing canvas size from %dx%d to %dx%d\n", winw, winh, can->GetWw(), can->GetWh());
 }
