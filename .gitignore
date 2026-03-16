@@ -5,6 +5,14 @@
 build/
 cmake-build-*/
 prefix/
+example/papers/generic
+example/papers/*/out
+example/papers/*/*.aux
+example/papers/*/*.bib
+example/papers/*/*.hpp
+example/papers/*/*.log
+example/papers/*/*.pdf
+example/papers/*/*.spl
 .clangd
 CMakeLists.txt.user
 CMakeUserPresets.json

@@ -5,9 +5,9 @@ include(cmake/prelude.cmake)
 project(
     canu
     VERSION 0.1.0
-    DESCRIPTION "Short description"
-    HOMEPAGE_URL "https://example.com/"
-    LANGUAGES NONE
+    DESCRIPTION "Canvas Unifier"
+    HOMEPAGE_URL "https://github.com/rlalik/canu/"
+    LANGUAGES CXX
 )
 
 include(cmake/project-is-top-level.cmake)
@@ -41,15 +41,6 @@ target_link_libraries(canu_canu INTERFACE ROOT::Core ROOT::Gpad)
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
   include(cmake/install-rules.cmake)
-endif()
-
-# ---- Examples ----
-
-if(PROJECT_IS_TOP_LEVEL)
-  option(BUILD_EXAMPLES "Build examples tree." "${canu_DEVELOPER_MODE}")
-  if(BUILD_EXAMPLES)
-    add_subdirectory(example)
-  endif()
 endif()
 
 # ---- Developer mode ----
