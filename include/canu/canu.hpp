@@ -425,14 +425,38 @@ private:
     std::set<TCanvas*> m_canvas_tracker;
 };
 
+constexpr auto make_epjc_paper()
+{
+    auto canu = cu::canu(495, 239, 10);             // NOLINT(*-magic-numbers)
+    canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
+
+    canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);  // NOLINT(*-magic-numbers)
+    canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.65); // NOLINT(*-magic-numbers)
+    canu.z_prop().set_max_digits(3).set_label_offset(0.005);                        // NOLINT(*-magic-numbers)
+
+    return canu;
+}
+
 constexpr auto make_nim_paper()
 {
     auto canu = cu::canu(522, 252, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
 
-    canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);
-    canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.25);
-    canu.z_prop().set_max_digits(3).set_label_offset(0.005);
+    canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);  // NOLINT(*-magic-numbers)
+    canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.65); // NOLINT(*-magic-numbers)
+    canu.z_prop().set_max_digits(3).set_label_offset(0.005);                        // NOLINT(*-magic-numbers)
+
+    return canu;
+}
+
+constexpr auto make_prc_paper()
+{
+    auto canu = cu::canu(510, 246, 10);             // NOLINT(*-magic-numbers)
+    canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
+
+    canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);  // NOLINT(*-magic-numbers)
+    canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.65); // NOLINT(*-magic-numbers)
+    canu.z_prop().set_max_digits(3).set_label_offset(0.005);                        // NOLINT(*-magic-numbers)
 
     return canu;
 }
