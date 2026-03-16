@@ -15,6 +15,7 @@
 #include <TLegend.h>
 #include <TStyle.h>
 
+#include <cstdio>
 #include <optional>
 #include <set>
 
@@ -40,12 +41,12 @@ constexpr auto px2pt(auto value_px) { return static_cast<double>(value_px) * 3 /
  * @param override_scale scale all dimensions, equal to 1 if left uninitialzied
  */
 inline auto set_canvas_size(TCanvas* can, UInt_t override_width, std::optional<UInt_t> override_height = {},
-                            std::optional<UInt_t> override_scale = {}) -> UInt_t
+                            std::optional<Float_t> override_scale = {}) -> UInt_t
 {
     const auto winw = can->GetWw();
     const auto winh = can->GetWh();
 
-    const auto new_width = override_width * override_scale.value_or(1);
+    const auto new_width = static_cast<UInt_t>(override_width * override_scale.value_or(1.F));
     const auto ratio = new_width / static_cast<double>(winw);
     const auto new_height = override_height.value_or(static_cast<UInt_t>(winh * ratio));
 
@@ -169,7 +170,7 @@ constexpr auto set_canvas_margins(TCanvas* can, Float_t mleft, Float_t mright, F
     const auto can_width = can->GetWw();
     const auto can_height = can->GetWh();
 
-    auto margin_settings = [&](auto* pad)
+    auto margin_settings = [&](auto* pad) -> void
     {
         const auto width = pad->GetWNDC() * can_width;
         const auto height = pad->GetHNDC() * can_height;
@@ -202,10 +203,10 @@ class canu;
 
 class axis_properties
 {
-    std::optional<Int_t> m_max_digits{};
-    std::optional<Int_t> m_ndivisions{};
-    std::optional<Float_t> m_toffset{}; // title offsets
-    std::optional<Float_t> m_loffset{}; // label offsets
+    std::optional<Int_t> m_max_digits;
+    std::optional<Int_t> m_ndivisions;
+    std::optional<Float_t> m_toffset; // title offsets
+    std::optional<Float_t> m_loffset; // label offsets
 
     friend class canu;
 
@@ -230,7 +231,7 @@ public:
      */
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     canu(UInt_t page_width, UInt_t column_width, UInt_t font_size)
-        : m_page_width{page_width}, m_column_width{column_width}, m_font_size{font_size}
+        : m_page_width{page_width}, m_column_width{column_width}, m_font_size{static_cast<Float_t>(font_size)}
     {
     }
 
@@ -238,18 +239,19 @@ public:
     auto get_column_width() const { return m_column_width; }
 
     // clang-format off
-    auto set_details_scale(UInt_t scale) -> canu& { m_details_scale = scale; return *this; }
+    auto set_details_scale(Float_t scale) -> canu& { m_details_scale = scale; return *this; }
     auto set_remove_title(bool remove) -> canu& { m_remove_title = remove; return *this; }
+    auto set_legend_scale(Float_t scale) -> canu& { m_legend_scale = scale; return *this; }
     // clang-format on
 
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     auto set_margins(std::optional<Float_t> margin_left, std::optional<Float_t> margin_right,
                      std::optional<Float_t> margin_bottom, std::optional<Float_t> margin_top)
     {
-        if (margin_left.has_value()) m_margin_left = margin_left.value();
-        if (margin_right.has_value()) m_margin_right = margin_right.value();
-        if (margin_bottom.has_value()) m_margin_bottom = margin_bottom.value();
-        if (margin_top.has_value()) m_margin_top = margin_top.value();
+        if (margin_left.has_value()) { m_margin_left = margin_left.value(); }
+        if (margin_right.has_value()) { m_margin_right = margin_right.value(); }
+        if (margin_bottom.has_value()) { m_margin_bottom = margin_bottom.value(); }
+        if (margin_top.has_value()) { m_margin_top = margin_top.value(); }
 
         return *this;
     }
@@ -327,7 +329,7 @@ private:
     /**
      * @brief Set fonts for a canvas.
      *
-     * @param can TCanvas to modify
+     * @param pad pad to modify
      */
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters,*-magic-numbers,misc-no-recursion)
     constexpr auto set_canvas_fonts(auto* pad) -> void
@@ -370,9 +372,9 @@ private:
             {
                 if (m_remove_title) { hist->SetTitle(""); }
 
-                axis_settings(hist->GetXaxis(), m_axis_x, 1. * m_page_width / pad_height);
-                axis_settings(hist->GetYaxis(), m_axis_y, 1. * m_page_width / pad_width);
-                axis_settings(hist->GetZaxis(), m_axis_z, 1.);
+                axis_settings(hist->GetXaxis(), m_axis_x, 1.F * m_page_width / pad_height);
+                axis_settings(hist->GetYaxis(), m_axis_y, 1.F * m_page_width / pad_width);
+                axis_settings(hist->GetZaxis(), m_axis_z, 1.F);
 
                 hist->SetTitleFont(m_font_kind);
                 hist->SetTitleSize(m_font_size * m_details_scale);
@@ -381,9 +383,9 @@ private:
             {
                 if (m_remove_title) { hstack->SetTitle(""); }
 
-                axis_settings(hstack->GetXaxis(), m_axis_x, 1. * m_page_width / pad_height);
-                axis_settings(hstack->GetYaxis(), m_axis_y, 1. * m_page_width / pad_width);
-                axis_settings(hstack->GetZaxis(), m_axis_z, 1.);
+                axis_settings(hstack->GetXaxis(), m_axis_x, 1.F * m_page_width / pad_height);
+                axis_settings(hstack->GetYaxis(), m_axis_y, 1.F * m_page_width / pad_width);
+                axis_settings(hstack->GetZaxis(), m_axis_z, 1.F);
             }
         }
     }
@@ -392,7 +394,7 @@ private:
     UInt_t m_page_height{0};
     UInt_t m_column_width;
 
-    UInt_t m_font_size;
+    Float_t m_font_size;
     Style_t m_font_kind{43}; // NOLINT(*-magic-numbers)
 
     Float_t m_margin_left{0.05F};   // NOLINT(*-magic-numbers)
@@ -400,7 +402,7 @@ private:
     Float_t m_margin_bottom{0.05F}; // NOLINT(*-magic-numbers)
     Float_t m_margin_top{0.05F};    // NOLINT(*-magic-numbers)
 
-    UInt_t m_details_scale{1};   // NOLINT(*-magic-numbers)
+    Float_t m_details_scale{1.F}; // NOLINT(*-magic-numbers)
     Float_t m_legend_scale{2.F};  // NOLINT(*-magic-numbers)
 
     axis_properties m_axis_x, m_axis_y, m_axis_z;
