@@ -12,6 +12,7 @@
 #include <TH1.h>
 #include <THStack.h>
 #include <TLatex.h>
+#include <TLegend.h>
 #include <TStyle.h>
 
 #include <optional>
@@ -275,6 +276,44 @@ public:
                            m_page_width * m_details_scale);
     }
 
+    /**
+     * Place TLegend box. The height will be calculated automatically, hwoever one need to adjust width.
+     * @param posx of top-left corner
+     * @param posy of top-left corner
+     * @param rows number of rows - used to calculate height
+     * @param cols number of columns
+     * @param width width of the legend box
+     * @return Tlegend pointer
+     */
+    auto place_legend(float posx, float posy, int rows, int cols, float width) const -> TLegend*
+    {
+        const auto unit_height = (m_font_size + 4) / m_page_width;
+        const auto height = rows * unit_height;
+        auto* legend = new TLegend(posx, posy - height, posx + width, posy);
+        legend->SetTextFont(m_font_kind);
+        legend->SetTextSize(m_font_size * m_legend_scale);
+        legend->SetNColumns(cols);
+        return legend;
+    }
+
+    /**
+     * Format all TLegend objects in a canavs.
+     * @param can canavs to format all legends in
+     */
+    auto format_legend(TCanvas* can) const
+    {
+        // const auto unit_height = (m_font_size + 4) / m_page_width;
+
+        for (auto* primitive : *can->GetListOfPrimitives())
+        {
+            if (auto* legend = dynamic_cast<TLegend*>(primitive); legend != nullptr)
+            {
+                legend->SetTextFont(m_font_kind);
+                legend->SetTextSize(m_font_size * m_legend_scale);
+            }
+        }
+    }
+
 private:
     auto single_canvas_action(TCanvas* can) -> void
     {
@@ -361,7 +400,8 @@ private:
     Float_t m_margin_bottom{0.05F}; // NOLINT(*-magic-numbers)
     Float_t m_margin_top{0.05F};    // NOLINT(*-magic-numbers)
 
-    UInt_t m_details_scale{1}; // NOLINT(*-magic-numbers)
+    UInt_t m_details_scale{1};   // NOLINT(*-magic-numbers)
+    Float_t m_legend_scale{2.F};  // NOLINT(*-magic-numbers)
 
     axis_properties m_axis_x, m_axis_y, m_axis_z;
 
