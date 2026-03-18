@@ -10,7 +10,7 @@ It will transform your paper into a polished, consistently professional piece of
 
 | None-formatted output  | CANU-formatted plots |
 | ---------------------- | ---------------------- |
-| ![geenric](docs/img/epjc_generic-1.png) | ![canu](docs/img/epjc_canu-1.png) |
+| ![generic](docs/img/epjc_generic-1.png) | ![canu](docs/img/epjc_canu-1.png) |
 
 ---
 

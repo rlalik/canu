@@ -90,19 +90,22 @@ inline auto fix_canvas_size(TCanvas* can)
         can->SetCanvasSize(width, height);
         can->SetWindowSize(width, height);
 
-        Int_t ww{};
-        Int_t wh{};
-        UInt_t winw{};
-        UInt_t winh{};
-        can->GetCanvasPar(ww, wh, winw, winh);
-        winw = width + 2;
-        winh = height + 29;
+        // FIXME code below breaks window width/height and sets to 0 in ROOT versions:
+        // * 6.38.00
+        // Int_t ww{};
+        // Int_t wh{};
+        // UInt_t winw{};
+        // UInt_t winh{};
+        // can->GetCanvasPar(ww, wh, winw, winh);
+        // winw = width + 2;
+        // winh = height + 29;
     }
     else { can->SetWindowSize(width + (width - winw), height + (height - winh)); }
 
     can->Modified();
 
-    std::printf("Fixing canvas size from %dx%d to %dx%d\n", winw, winh, can->GetWw(), can->GetWh());
+    std::printf("Fixing canvas size from %dx%d to %dx%d (%dx%d)\n", winw, winh, can->GetWw(), can->GetWh(),
+                can->GetWindowWidth(), can->GetWindowHeight());
 }
 
 /**
