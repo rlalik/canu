@@ -201,16 +201,16 @@ See `example/` directory for working examples. Use `make` or `build_examples.sh`
 
 ```c++
 void plot1() {
-    TH1F h(\"h\",\"Example\",100,-3,3);
-    h.FillRandom(\"gaus\",10000);
+    TH1F h("h","Example",100,-3,3);
+    h.FillRandom("gaus",10000);
 
-    TCanvas c(\"c\",\"c\",800,600);
+    TCanvas c("c","c",800,600);
     h.Draw();
 
     auto canu = cu::make_epjc_paper();
     canu.make_column_wide(&c);
 
-    c.SaveAs(\"hist_column.pdf\");
+    c.SaveAs("hist_column.pdf");
 }
 ```
 
@@ -218,15 +218,15 @@ void plot1() {
 
 ```c++
 void plot_overlay() {
-    TH1F h1(\"h1\",\"Data\",100,-5,5);
-    TH1F h2(\"h2\",\"Model\",100,-5,5);
+    TH1F h1("h1","Data",100,-5,5);
+    TH1F h2("h2","Model",100,-5,5);
 
     h1.SetLineColor(kBlue);
     h2.SetLineColor(kRed);
 
-    TCanvas c(\"c\",\"Overlay\",800,600);
+    TCanvas c("c","Overlay",800,600);
     h1.Draw();
-    h2.Draw(\"same\");
+    h2.Draw("same");
 
     auto canu = cu::make_prc_paper();
     canu.x_prop().set_ndivisions(510);
@@ -234,7 +234,7 @@ void plot_overlay() {
 
     canu.make_page_wide(&c);
 
-    c.SaveAs(\"overlay_prc.pdf\");
+    c.SaveAs("overlay_prc.pdf");
 }
 ```
 
