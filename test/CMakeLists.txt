@@ -28,7 +28,6 @@ FetchContent_MakeAvailable(googletest)
 # ---- Tests ----
 
 add_executable(canu_test
-  source/tests_conversions.cpp
   source/tests_canvas_resize.cpp
   source/tests_canvas_margins.cpp
 )

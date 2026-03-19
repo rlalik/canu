@@ -22,15 +22,6 @@
 namespace cu
 {
 
-constexpr std::array<Color_t, 6> color_p6 = {kP6Blue, kP6Yellow, kP6Red, kP6Grape, kP6Gray, kP6Violet};
-constexpr std::array<Color_t, 8> color_p8 = {kP8Blue, kP8Orange, kP8Red, kP8Pink, kP8Green, kP8Cyan, kP8Azure, kP8Gray};
-constexpr std::array<Color_t, 10> color_p10 = {kP10Blue,  kP10Yellow, kP10Red,   kP10Gray, kP10Violet,
-                                               kP10Brown, kP10Orange, kP10Green, kP10Ash,  kP10Cyan};
-
-template <class T> constexpr auto pt2px(T value_pt) { return static_cast<UInt_t>(value_pt * 4 / 3); }
-
-template <class T> constexpr auto px2pt(T value_px) { return static_cast<Float_t>(value_px) * 3 / 4; }
-
 /**
  * @brief Resize canvas to true sizes specified by TCanvas arguments.
  *
