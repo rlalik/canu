@@ -3,6 +3,7 @@
 #include "canu/canu.hpp"
 
 #include <memory>
+#include <tuple>
 
 constexpr float margin_left{0.1};
 constexpr float margin_right{0.1};

@@ -27,9 +27,9 @@ constexpr std::array<Color_t, 8> color_p8 = {kP8Blue, kP8Orange, kP8Red, kP8Pink
 constexpr std::array<Color_t, 10> color_p10 = {kP10Blue,  kP10Yellow, kP10Red,   kP10Gray, kP10Violet,
                                                kP10Brown, kP10Orange, kP10Green, kP10Ash,  kP10Cyan};
 
-constexpr auto pt2px(auto value_pt) { return static_cast<UInt_t>(value_pt * 4 / 3); }
+template <class T> constexpr auto pt2px(T value_pt) { return static_cast<UInt_t>(value_pt * 4 / 3); }
 
-constexpr auto px2pt(auto value_px) { return static_cast<double>(value_px) * 3 / 4; }
+template <class T> constexpr auto px2pt(T value_px) { return static_cast<Float_t>(value_px) * 3 / 4; }
 
 /**
  * @brief Resize canvas to true sizes specified by TCanvas arguments.
@@ -115,7 +115,7 @@ inline auto fix_canvas_size(TCanvas* can)
  * @param font find type, should be x3 of ROOT fonts, otherwise result will be broken.
  */
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters,*-magic-numbers)
-constexpr auto set_global_fonts(UInt_t size, Style_t font = 43)
+inline auto set_global_fonts(UInt_t size, Style_t font = 43)
 {
     // static_assert(font % 10 == 3, "Font must of of x3 family of ROOT fonts."); FIXME make it
     // working
@@ -134,7 +134,7 @@ constexpr auto set_global_fonts(UInt_t size, Style_t font = 43)
  * @param font find type, should be x3 of ROOT fonts, otherwise result will be broken.
  */
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters,*-magic-numbers,misc-no-recursion)
-constexpr auto set_canvas_fonts(auto* can, UInt_t size, Style_t font = 43) -> void
+template <class T> auto set_canvas_fonts(T* can, UInt_t size, Style_t font = 43) -> void
 {
     // static_assert(font % 10 == 3, "Font must of of x3 family of ROOT fonts."); FIXME make it
     // working
@@ -180,8 +180,8 @@ constexpr auto set_canvas_fonts(auto* can, UInt_t size, Style_t font = 43) -> vo
  * @param reference_size reference for which all margins are normalized
  */
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters,*-magic-numbers)
-constexpr auto set_canvas_margins(TCanvas* can, Float_t mleft, Float_t mright, Float_t mbot, Float_t mtop,
-                                  UInt_t reference_size)
+inline auto set_canvas_margins(TCanvas* can, Float_t mleft, Float_t mright, Float_t mbot, Float_t mtop,
+                               UInt_t reference_size)
 {
     const auto can_width = can->GetWw();
     const auto can_height = can->GetWh();
@@ -228,10 +228,10 @@ class axis_properties
 
 public:
     // clang-format off
-    auto set_max_digits(Int_t max_digits) -> axis_properties& { m_max_digits = max_digits; return *this; }
-    auto set_ndivisions(Int_t ndivisions) -> axis_properties& { m_ndivisions = ndivisions; return *this; }
-    auto set_title_offset(Float_t offset) -> axis_properties& { m_toffset = offset; return *this; }
-    auto set_label_offset(Float_t offset) -> axis_properties& { m_loffset = offset; return *this; }
+    constexpr auto set_max_digits(Int_t max_digits) -> axis_properties& { m_max_digits = max_digits; return *this; }
+    constexpr auto set_ndivisions(Int_t ndivisions) -> axis_properties& { m_ndivisions = ndivisions; return *this; }
+    constexpr auto set_title_offset(Float_t offset) -> axis_properties& { m_toffset = offset; return *this; }
+    constexpr auto set_label_offset(Float_t offset) -> axis_properties& { m_loffset = offset; return *this; }
     // clang-format on
 };
 
@@ -251,18 +251,18 @@ public:
     {
     }
 
-    auto get_page_width() const { return m_page_width; }
-    auto get_column_width() const { return m_column_width; }
+    constexpr auto get_page_width() const { return m_page_width; }
+    constexpr auto get_column_width() const { return m_column_width; }
 
     // clang-format off
-    auto set_details_scale(Float_t scale) -> canu& { m_details_scale = scale; return *this; }
-    auto set_remove_title(bool remove) -> canu& { m_remove_title = remove; return *this; }
-    auto set_legend_scale(Float_t scale) -> canu& { m_legend_scale = scale; return *this; }
+    constexpr auto set_details_scale(Float_t scale) -> canu& { m_details_scale = scale; return *this; }
+    constexpr auto set_remove_title(bool remove) -> canu& { m_remove_title = remove; return *this; }
+    constexpr auto set_legend_scale(Float_t scale) -> canu& { m_legend_scale = scale; return *this; }
     // clang-format on
 
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     auto set_margins(std::optional<Float_t> margin_left, std::optional<Float_t> margin_right,
-                     std::optional<Float_t> margin_bottom, std::optional<Float_t> margin_top)
+                     std::optional<Float_t> margin_bottom, std::optional<Float_t> margin_top) -> canu&
     {
         if (margin_left.has_value()) { m_margin_left = margin_left.value(); }
         if (margin_right.has_value()) { m_margin_right = margin_right.value(); }
@@ -272,11 +272,11 @@ public:
         return *this;
     }
 
-    auto x_prop() -> axis_properties& { return m_axis_x; }
-    auto y_prop() -> axis_properties& { return m_axis_y; }
-    auto z_prop() -> axis_properties& { return m_axis_z; }
+    constexpr auto x_prop() -> axis_properties& { return m_axis_x; }
+    constexpr auto y_prop() -> axis_properties& { return m_axis_y; }
+    constexpr auto z_prop() -> axis_properties& { return m_axis_z; }
 
-    auto make_page_wide(TCanvas* can, std::optional<UInt_t> height = {})
+    constexpr auto make_page_wide(TCanvas* can, std::optional<UInt_t> height = {})
     {
         single_canvas_action(can);
         m_page_height = set_canvas_size(can, m_page_width, height, m_details_scale);
@@ -285,7 +285,7 @@ public:
                            m_page_width * m_details_scale);
     }
 
-    auto make_column_wide(TCanvas* can, std::optional<UInt_t> height = {})
+    constexpr auto make_column_wide(TCanvas* can, std::optional<UInt_t> height = {})
     {
         single_canvas_action(can);
         m_page_height = set_canvas_size(can, m_column_width, height, m_details_scale);
@@ -333,9 +333,9 @@ public:
     }
 
 private:
-    auto single_canvas_action(TCanvas* can) -> void
+    constexpr auto single_canvas_action(TCanvas* can) -> void
     {
-        if (!m_canvas_tracker.contains(can))
+        if (!m_canvas_tracker.count(can))
         {
             m_canvas_tracker.insert(can);
             fix_canvas_size(can);
@@ -348,7 +348,7 @@ private:
      * @param pad pad to modify
      */
     // NOLINTNEXTLINE(bugprone-easily-swappable-parameters,*-magic-numbers,misc-no-recursion)
-    constexpr auto set_canvas_fonts(auto* pad) -> void
+    template <class T> constexpr auto set_canvas_fonts(T* pad) -> void
     {
         const auto pad_width = pad->GetWNDC() * pad->GetWw();
         const auto pad_height = pad->GetHNDC() * pad->GetWh();
@@ -428,7 +428,7 @@ private:
     std::set<TCanvas*> m_canvas_tracker;
 };
 
-constexpr auto make_epjc_paper()
+inline auto make_epjc_paper()
 {
     auto canu = cu::canu(495, 239, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
@@ -440,7 +440,7 @@ constexpr auto make_epjc_paper()
     return canu;
 }
 
-constexpr auto make_nim_paper()
+inline auto make_nim_paper()
 {
     auto canu = cu::canu(522, 252, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
@@ -452,7 +452,7 @@ constexpr auto make_nim_paper()
     return canu;
 }
 
-constexpr auto make_prc_paper()
+inline auto make_prc_paper()
 {
     auto canu = cu::canu(510, 246, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
