@@ -19,11 +19,19 @@ FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG        52eb8108c5bdec04579160ae17225d66034bd723 # release-1.17.0
-  FIND_PACKAGE_ARGS NAMES GTest
+  OVERRIDE_FIND_PACKAGE
+  # FIND_PACKAGE_ARGS NAMES GTest
 )
 
 # This will try calling find_package() first for dependencies
 FetchContent_MakeAvailable(googletest)
+
+# Well, gtest uses c++17 internally but ROOT may enforce another standard on CANU:
+# If ROOT std >= c++20 then u8string is expected which does not exists in c++17 causing
+# linking error. See: https://github.com/google/googletest/issues/4591
+# This line enforces using same standard for gtest like ROOT/CANU,
+# modern ROOT should not be lower than 17 anyway.
+target_link_libraries(gtest PRIVATE canu::canu)
 
 # ---- Tests ----
 
