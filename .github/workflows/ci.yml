@@ -11,16 +11,16 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install dependencies
       run: sudo apt-get update -q
         && sudo apt-get install clang-format-20 -q -y
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with: { python-version: "3.12" }
 
     - name: Install codespell
@@ -47,7 +47,7 @@ jobs:
       # && false
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install LCov
       run: apt-get update -q
@@ -68,16 +68,20 @@ jobs:
 
     - name: Submit to Coveralls.io
       uses: coverallsapp/github-action@v2
+      with:
+        file: build/coverage/coverage.info
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
   sanitize:
     needs: [lint]
 
-    runs-on: rootproject/root:latest
+    runs-on: ubuntu-latest
+    container: rootproject/root:latest
 
     env: { CXX: clang++-21 }
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install Clang
       run: apt-get update -q
@@ -110,7 +114,6 @@ jobs:
         container: [
                      rootproject/root:6.38.00-ubuntu25.10,
                      rootproject/root:6.36.00-ubuntu25.04,
-                     rootproject/root:6.34.00-ubuntu24.10,
                      rootproject/root:6.34.00-ubuntu24.04,
                      rootproject/root:6.32.04-ubuntu24.04
                    ]
@@ -119,7 +122,7 @@ jobs:
     container: ${{ matrix.container }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install static analyzers for Ubuntu 25.10
       if: ${{ endsWith(matrix.container, '25.10') }}
@@ -134,17 +137,6 @@ jobs:
 
     - name: Install static analyzers for Ubuntu 25.04
       if: ${{ endsWith(matrix.container, '25.04') }}
-      run: >-
-        apt-get update
-
-        apt-get install clang-tidy-20 cppcheck -y -q
-
-        update-alternatives --install
-        /usr/bin/clang-tidy clang-tidy
-        /usr/bin/clang-tidy-20 200
-
-    - name: Install static analyzers for Ubuntu 24.10
-      if: ${{ endsWith(matrix.container, '24.10') }}
       run: >-
         apt-get update
 
@@ -185,7 +177,7 @@ jobs:
     container: rootproject/root:latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Install pdflatex
       run: >-
@@ -207,7 +199,8 @@ jobs:
     # Deploy docs only when builds succeed
     needs: [sanitize, test]
 
-    runs-on: rootproject/root:latest
+    runs-on: ubuntu-latest
+    container: rootproject/root:latest
 
     # To enable, first you have to create an orphaned gh-pages branch:
     #
@@ -229,9 +222,9 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with: { python-version: "3.14" }
 
     - name: Install m.css dependencies

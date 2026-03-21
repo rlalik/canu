@@ -1,8 +1,8 @@
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE) [![Build](https://github.com/rlalik/canu/actions/workflows/ci.yml/badge.svg)](https://github.com/rlalik/canu/actions/workflows/ci.yml) [![C++ Version](https://img.shields.io/badge/C++17-Required-lightgrey.svg)](https://isocpp.org/)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE) [![Build](https://github.com/rlalik/canu/actions/workflows/ci.yml/badge.svg)](https://github.com/rlalik/canu/actions/workflows/ci.yml) [![C++ Version](https://img.shields.io/badge/C++17-Required-lightgrey.svg)](https://isocpp.org/) [![Coverage Status](https://coveralls.io/repos/github/rlalik/canu/badge.svg?branch=master)](https://coveralls.io/github/rlalik/canu?branch=master)
 
-# CANU – Canvas UNIfier for ROOT
+# CANU – CANvas Unifier for ROOT
 
-**CANU** (CANvas UNIfier) is a lightweight **C++17 header-only library** utility for the **ROOT** framework that helps produce **publication‑ready, consistently formatted plots**. It solves common issues in ROOT graphics related to canvas sizes, font scaling, axis formatting, margins, and legend placement.
+**CANU** (CANvas Unifier) is a lightweight **C++17 header-only library** utility for the **ROOT** framework that helps produce **publication‑ready, consistently formatted plots**. It solves common issues in ROOT graphics related to canvas sizes, font scaling, axis formatting, margins, and legend placement.
 
 > Designed for high‑energy physics analysis and journal publication workflows (e.g. EPJC, PRC, NIM, etc.).
 

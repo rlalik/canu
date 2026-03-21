@@ -26,7 +26,7 @@ auto get_canvas(int fact_x, int fact_y) -> std::tuple<std::unique_ptr<TCanvas>, 
 
 } // namespace
 
-TEST(TestsCanvasBorders, Canvas1x1)
+TEST(TestsCanvasMargins, Canvas1x1)
 {
     auto [can, can_ref_w, can_ref_h] = get_canvas(1, 1);
 
@@ -36,7 +36,7 @@ TEST(TestsCanvasBorders, Canvas1x1)
     ASSERT_FLOAT_EQ(can->GetTopMargin() * can_ref_h, margin_top * canvas_ref_size);
 }
 
-TEST(TestsCanvasBorders, Canvas2x1)
+TEST(TestsCanvasMargins, Canvas2x1)
 {
     auto [can, can_ref_w, can_ref_h] = get_canvas(2, 1);
 
@@ -46,7 +46,7 @@ TEST(TestsCanvasBorders, Canvas2x1)
     ASSERT_FLOAT_EQ(can->GetTopMargin() * can_ref_h, margin_top * canvas_ref_size);
 }
 
-TEST(TestsCanvasBorders, Canvas1x2)
+TEST(TestsCanvasMargins, Canvas1x2)
 {
     auto [can, can_ref_w, can_ref_h] = get_canvas(1, 2);
 
@@ -56,7 +56,7 @@ TEST(TestsCanvasBorders, Canvas1x2)
     ASSERT_FLOAT_EQ(can->GetTopMargin() * can_ref_h, margin_top * canvas_ref_size);
 }
 
-TEST(TestsCanvasBorders, Canvas2x2)
+TEST(TestsCanvasMargins, Canvas2x2)
 {
     auto [can, can_ref_w, can_ref_h] = get_canvas(2, 2);
 
@@ -66,7 +66,7 @@ TEST(TestsCanvasBorders, Canvas2x2)
     ASSERT_FLOAT_EQ(can->GetTopMargin() * can_ref_h, margin_top * canvas_ref_size);
 }
 
-TEST(TestsCanvasBorders, Canvas3x1)
+TEST(TestsCanvasMargins, Canvas3x1)
 {
     auto [can, can_ref_w, can_ref_h] = get_canvas(3, 1);
 
@@ -76,7 +76,7 @@ TEST(TestsCanvasBorders, Canvas3x1)
     ASSERT_FLOAT_EQ(can->GetTopMargin() * can_ref_h, margin_top * canvas_ref_size);
 }
 
-TEST(TestsCanvasBorders, Canvas4x3)
+TEST(TestsCanvasMargins, Canvas4x3)
 {
     auto [can, can_ref_w, can_ref_h] = get_canvas(4, 3);
 
