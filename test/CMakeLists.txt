@@ -38,6 +38,7 @@ target_link_libraries(gtest PRIVATE canu::canu)
 add_executable(canu_test
   source/tests_canvas_resize.cpp
   source/tests_canvas_margins.cpp
+  source/tests_presets.cpp
 )
 target_link_libraries(canu_test PRIVATE canu::canu GTest::gtest_main)
 target_compile_features(canu_test PRIVATE cxx_std_17)

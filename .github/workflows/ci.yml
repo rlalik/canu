@@ -107,27 +107,25 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - os: ubuntu-25.10
-            container: rootproject/root:6.38.00-ubuntu25.10
-          - os: ubuntu-25.04
-            container: rootproject/root:6.36.00-ubuntu25.04
-          - os: ubuntu-24.10
-            container: rootproject/root:6.34.00-ubuntu24.10
-          - os: ubuntu-24.04
-            container: rootproject/root:6.34.00-ubuntu24.04
-          - os: ubuntu-24.04
-            container: rootproject/root:6.32.04-ubuntu24.04
+        container: [
+                     rootproject/root:6.38.00-ubuntu25.10,
+                     rootproject/root:6.36.00-ubuntu25.04,
+                     rootproject/root:6.34.00-ubuntu24.10,
+                     rootproject/root:6.34.00-ubuntu24.04,
+                     rootproject/root:6.32.04-ubuntu24.04
+                   ]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     container: ${{ matrix.container }}
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Install static analyzers for Ubuntu 25.10
-      if: matrix.os == 'ubuntu-25.10'
+      if: ${{ endsWith(matrix.container, '25.10') }}
       run: >-
+        apt-get update
+
         apt-get install clang-tidy-21 cppcheck -y -q
 
         update-alternatives --install
@@ -135,8 +133,10 @@ jobs:
         /usr/bin/clang-tidy-21 210
 
     - name: Install static analyzers for Ubuntu 25.04
-      if: matrix.os == 'ubuntu-25.04'
+      if: ${{ endsWith(matrix.container, '25.04') }}
       run: >-
+        apt-get update
+
         apt-get install clang-tidy-20 cppcheck -y -q
 
         update-alternatives --install
@@ -144,8 +144,10 @@ jobs:
         /usr/bin/clang-tidy-20 200
 
     - name: Install static analyzers for Ubuntu 24.10
-      if: matrix.os == 'ubuntu-24.10'
+      if: ${{ endsWith(matrix.container, '24.10') }}
       run: >-
+        apt-get update
+
         apt-get install clang-tidy-20 cppcheck -y -q
 
         update-alternatives --install
@@ -153,7 +155,7 @@ jobs:
         /usr/bin/clang-tidy-20 200
 
     - name: Install static analyzers for Ubuntu 24.04
-      if: matrix.os == 'ubuntu-24.04'
+      if: ${{ endsWith(matrix.container, '24.04') }}
       run: >-
         apt-get update
 
@@ -164,7 +166,6 @@ jobs:
         /usr/bin/clang-tidy-20 200
 
     - name: Configure
-      if: startsWith(matrix.os, 'ubuntu-')
       run: cmake --preset=ci-ubuntu
 
     - name: Build
@@ -176,6 +177,31 @@ jobs:
     - name: Test
       working-directory: build
       run: ctest --output-on-failure --no-tests=error -C Release -j 2
+
+  examples:
+    needs: [test]
+
+    runs-on: ubuntu-latest
+    container: rootproject/root:latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install pdflatex
+      run: >-
+        apt-get update
+
+        apt-get install -y -q
+        texlive-latex-base
+        texlive-latex-extra
+        texlive-lang-greek
+        texlive-publishers
+
+    - name: Make examples
+      run: >-
+        cd example
+
+        make
 
   docs:
     # Deploy docs only when builds succeed

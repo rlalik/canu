@@ -10,7 +10,7 @@ It will transform your paper into a polished, consistently professional piece of
 
 | None-formatted output  | CANU-formatted plots |
 | ---------------------- | ---------------------- |
-| ![generic](docs/img/epjc_generic-1.png) | ![canu](docs/img/epjc_canu-1.png) |
+| ![generic](docs/img/epja_generic-1.png) | ![canu](docs/img/epja_canu-1.png) |
 
 ---
 
@@ -252,9 +252,10 @@ void plot_overlay() {
 ## 📦 Journal Presets
 
 ```c++
-auto epjc = cu::make_epjc_paper();
-auto nim  = cu::make_nim_paper();
-auto prc  = cu::make_prc_paper();
+auto epja  = cu::make_epja_paper();  // European Physics Journal A
+auto nim   = cu::make_nima_paper();  // Nuclear Instruments and Methods A
+auto prc   = cu::make_prc_paper();   // Physical Review C
+auto snjnl = cu::make_sn_jnlpaper(); // Springer Nature Journal
 ```
 
 To request other journals, create [new issue](https://github.com/rlalik/canu/issues/new) or submit new Pull request. See example how to prepare new journal definition.

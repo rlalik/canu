@@ -4,7 +4,7 @@ void _canu_2d_column(const char * macro_name)
 {
     gStyle->SetPalette(kBird);
 
-    auto canu = cu::make_nima_paper();
+    auto canu = cu::make_epja_paper();
     canu.set_details_scale(2);
 
     gROOT->ProcessLine(Form(".x %s", macro_name));

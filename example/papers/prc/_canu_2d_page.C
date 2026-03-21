@@ -4,7 +4,7 @@ void _canu_2d_page(const char * macro_name)
 {
     gStyle->SetPalette(kBird);
 
-    auto canu = cu::make_nim_paper();
+    auto canu = cu::make_prc_paper();
     canu.set_details_scale(2);
 
     gROOT->ProcessLine(Form(".x %s", macro_name));

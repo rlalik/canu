@@ -2,7 +2,7 @@ page_images := img1 img2 img3
 column_images := img4
 images = $(page_images) $(column_images)
 
-journals := epjc nima prc
+journals := epja nima prc sn_jnl
 
 generic_targets := $(addsuffix _generic,$(journals))
 journal_targets := $(addsuffix _canu,$(journals))

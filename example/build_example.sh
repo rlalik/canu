@@ -5,7 +5,7 @@ root macros/img2.C -b -q
 root macros/img3.C -b -q
 root macros/img4.C -b -q
 
-for journal in {nima,prc,epjc}; do
+for journal in {epja,nima,prc,sn_jnl}; do
     (
         cd papers/${journal}
         ln -s ../../../include/canu/canu.hpp .

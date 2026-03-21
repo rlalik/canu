@@ -10,6 +10,7 @@ example/papers/*/*.aux
 example/papers/*/*.bib
 example/papers/*/*.hpp
 example/papers/*/*.log
+example/papers/*/*.out
 example/papers/*/*.pdf
 example/papers/*/*.spl
 .clangd

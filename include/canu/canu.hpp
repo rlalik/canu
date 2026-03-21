@@ -419,7 +419,7 @@ private:
     std::set<TCanvas*> m_canvas_tracker;
 };
 
-inline auto make_epjc_paper()
+inline auto make_epja_paper()
 {
     auto canu = cu::canu(495, 239, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
@@ -431,7 +431,7 @@ inline auto make_epjc_paper()
     return canu;
 }
 
-inline auto make_nim_paper()
+inline auto make_nima_paper()
 {
     auto canu = cu::canu(522, 252, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
@@ -447,6 +447,18 @@ inline auto make_prc_paper()
 {
     auto canu = cu::canu(510, 246, 10);             // NOLINT(*-magic-numbers)
     canu.set_margins(0.065F, 0.065F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
+
+    canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);  // NOLINT(*-magic-numbers)
+    canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.65); // NOLINT(*-magic-numbers)
+    canu.z_prop().set_max_digits(3).set_label_offset(0.005);                        // NOLINT(*-magic-numbers)
+
+    return canu;
+}
+
+inline auto make_sn_jnl_paper()
+{
+    auto canu = cu::canu(455, 216, 10);             // NOLINT(*-magic-numbers)
+    canu.set_margins(0.075F, 0.075F, 0.05F, 0.03F); // NOLINT(*-magic-numbers)
 
     canu.x_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.0);  // NOLINT(*-magic-numbers)
     canu.y_prop().set_max_digits(3).set_label_offset(0.005).set_title_offset(1.65); // NOLINT(*-magic-numbers)
